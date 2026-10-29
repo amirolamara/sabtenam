@@ -130,13 +130,18 @@ $("tb").innerHTML=C.map(function(c){return"<tr><td>"+c[1]+"</td><td>"+c[2]+"</td
 if(API)$("demo").classList.add("hide");
 function okId(c){var s=0,i;for(i=0;i<9;i++)s+=(+c[i])*(10-i);s%=11;return(s<2?s:11-s)==+c[9]&&!/^(\d)\1{9}$/.test(c)}
 async function lookup(k){if(!API)return D[k]?{found:1,parent:D[k].p,student:D[k].s,score:D[k].sc,level:D[k].l}:{found:0};
-var r=await fetch(API+"?action=lookup&id="+k);return r.json()}
+var tries=[k];if(k.length==10&&k[0]=="0")tries.push(k.replace(/^0+/,""));var last={};
+for(var i=0;i<tries.length;i++){var r=await fetch(API+"?action=lookup&id="+encodeURIComponent(tries[i])+"&t="+Date.now());var j=await r.json();last=j;
+var f=j&&(j.found===true||j.found===1||j.found==="true"||j.found==="1");
+if(f){j.found=1;j.parent=j.parent||j.p||"";j.student=j.student||j.s||"";j.score=j.score!=null?j.score:j.sc;j.level=j.level||j.l;return j}}
+last.found=0;last.noKey=!("found" in last);return last}
 async function login(){var k=en($("nid").value.trim()),e=$("err");
 if(!/^(\d{6}|\d{10})$/.test(k)){e.textContent="کد ملی ۱۰ رقمی یا کد دانش‌آموزی ۶ رقمی را وارد کنید.";return}
 $("go").disabled=true;$("go").textContent="در حال بررسی…";e.textContent="";
 try{var r=await lookup(k);
 if(r.found){cur={key:k,type:"old",p:r.parent,s:r.student,sc:+r.score,lv:r.level}}
-else if(k.length==10&&(okId(k)||k=="0012345678")){cur={key:k,type:"new",lv:""}}
+else if(k.length==10||k.length==6){cur={key:k,type:"new",lv:""}}
+else if(r.noKey||r.error){e.textContent="پاسخ اسکریپت شیت با این صفحه هماهنگ نیست (نسخهٔ قدیمی اسکریپت Deploy شده است). به ادمین فنی اطلاع دهید.";return}
 else{e.textContent=k.length==6?"این کد دانش‌آموزی پیدا نشد. اگر ورودی جدید هستید، با کد ملی وارد شوید.":"کد ملی معتبر نیست؛ دوباره بررسی کنید.";return}
 welcome()}catch(x){e.textContent="ارتباط با سامانه برقرار نشد؛ کمی بعد دوباره تلاش کنید."}
 finally{$("go").disabled=false;$("go").textContent="ورود"}}
