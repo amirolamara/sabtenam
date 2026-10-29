@@ -78,7 +78,7 @@ tr.dis{opacity:.45}tr.sel{background:#ffeb9655}tr[data-i]{cursor:pointer}tr.dis[
 <p class="help">• زبان‌آموزان <b>ورودی ۱۴۰۴ به بعد</b>: کد ملی ۱۰ رقمی دانش‌آموز<br>• سایر زبان‌آموزان: <b>کد دانش‌آموزی ۶ رقمی</b> (همان کد ورود به همکلاسی)<br>• متقاضیان جدید نیز با کد ملی وارد می‌شوند.</p>
 <div class="err" id="err"></div>
 <button id="go">ورود</button>
-<div class="hint" id="demo">پیش‌نمایش (داده نمونه): ۰۰۱۲۳۴۵۶۷۸ ‏· ۱۱۱۱۱۱۱۱۱۱ (مشروط) ‏· ۲۲۲۲۲۲۲۲۲۲ (مردود؛ تکرار ترم قبل) ‏· ۱۲۳۴۵۶ (کد دانش‌آموزی) ‏· ۰۴۹۹۳۷۰۸۹۹ (هر کد ملی دیگر = عضو جدید)</div>
+
 </section>
 
 <section class="card hide" id="s2">
@@ -103,7 +103,7 @@ tr.dis{opacity:.45}tr.sel{background:#ffeb9655}tr[data-i]{cursor:pointer}tr.dis[
 <h2 id="st"></h2><div id="lv"></div>
 <div id="blocked" class="note hide">متأسفانه با توجه به نمرهٔ فاینال، امکان ثبت‌نام آنلاین برای شما فعال نیست. لطفاً با ادمین در ایتا هماهنگ کنید.</div>
 <div id="form">
-<div id="newf" class="hide"><p class="help" style="margin:0 0 8px">عضو جدید می‌تواند مستقیماً در <b>ترم 2TEEN</b> ثبت‌نام کند. ثبت‌نام در سایر ترم‌ها فقط پس از <b>تعیین سطح</b> توسط ادمین ممکن است.</p><label class="opt" id="plw"><input type="checkbox" id="placed"><span>تعیین سطح شده‌ام و ادمین سطح مرا تأیید کرده است.</span></label></div>
+<div id="newf" class="hide"><p class="help" style="margin:0 0 8px">عضو جدید می‌تواند مستقیماً در <b>ترم 2TEEN</b> ثبت‌نام کند. سایر ترم‌ها هم نمایش داده می‌شوند، اما انتخاب آن‌ها فقط برای کسانی معتبر است که قبلاً از طریق ادمین <b>تعیین سطح</b> شده‌اند.</p><div class="note hide" id="warn">⚠️ توجه: ثبت‌نام در این ترم نیازمند <b>تعیین سطح قبلی</b> از طریق ادمین است. اگر هنوز تعیین سطح نشده‌اید، ابتدا با ادمین در ایتا هماهنگ کنید؛ در غیر این صورت ثبت‌نام شما لغو می‌شود.</div></div>
 <div class="note hide" id="cond"><label style="display:flex;gap:8px;margin:0"><input type="checkbox" id="pledge" style="accent-color:var(--acc)"> متعهد می‌شوم در ترم جدید نمرهٔ بالاتری کسب کنم.</label></div>
 <div class="note hide" id="bk">📚 این سطح وارد کتاب جدید Interchange می‌شود. سفارش کتاب را تا دوشنبه ساعت ۱۴ از طریق ادمین انجام دهید.</div>
 <div class="sec" id="clsw"><b>کلاس مورد نظر را انتخاب کنید</b><div class="tbl"><table id="ctb"></table></div></div>
@@ -129,17 +129,15 @@ var fa=function(s){return String(s).replace(/\d/g,function(d){return"۰۱۲۳۴�
 var money=function(n){return fa(n.toLocaleString("en-US").replace(/,/g,"٬"))+" تومان"};
 var L={T2:"ترم 2TEEN",E1:"E1",E3:"E3",T8:"ترم ۸",P2:"P2"},SN=["ورود","اطلاعیه و شرایط","انتخاب کلاس","صدور فاکتور"];
 var C=[["T2", "ترم 2TEEN (ترم ۱ سابق)", "شنبه و چهارشنبه", "۴ تا ۶"], ["E1", "سطح E1 (ترم ۴ سابق)", "یکشنبه و پنج‌شنبه", "۴ تا ۶"], ["E1", "سطح E1 (ترم ۴ سابق)", "شنبه و چهارشنبه", "۴ تا ۶"], ["E3", "سطح E3 (ترم ۶ سابق)", "شنبه و چهارشنبه", "۴ تا ۶"], ["T8", "ترم ۸ (ترم ۷ سابق)", "شنبه و چهارشنبه", "۶ تا ۸"], ["P2", "سطح P2 (سطح P1 سابق)", "شنبه و چهارشنبه", "۶ تا ۸"], ["P2", "سطح P2 (سطح P1 سابق)", "یکشنبه و پنج‌شنبه", "۴ تا ۶"]];
-var FEE={T2:1400000,E1:1600000,E3:1600000,T8:1600000,P2:1900000},CLUB=500000,CAP=7,cnt={};
+var FEE={T2:1400000,E1:1600000,E3:1600000,T8:1600000,P2:1900000},CLUB=500000,CAPS={T2:10,E1:7,E3:10,T8:10,P2:7},cnt={};
 var D={"0012345678":{p:"خانم احمدی",s:"سارا احمدی",sc:84,l:"E1"},"1111111111":{p:"آقای رضایی",s:"محمد رضایی",sc:64,l:"E3"},"2222222222":{p:"خانم کریمی",s:"نیلوفر کریمی",sc:55,l:"T8"},"123456":{p:"آقای حسینی",s:"امیرعلی حسینی",sc:77,l:"P2"}};
 var $=function(i){return document.getElementById(i)},cur,pick=-1,tmr,t0,fin=false;
 var st=function(sc){return sc>=70?"قبول":sc>=60?"قبولی مشروط":"مردود"},ckey=function(c){return c[1]+" - "+c[2]+" "+c[3]};
-if(!API){cnt[ckey(C[1])]=5;cnt[ckey(C[2])]=7}
 function show(n){["s1","s2","s3","s4"].forEach(function(x,i){$(x).classList.toggle("hide",i!=n)});[].forEach.call($("steps").children,function(e,i){e.classList.toggle("on",i==n);e.classList.toggle("done",i<n)});$("stl").textContent="مرحله "+fa(n+1)+" از "+fa(4)+" — "+SN[n];window.scrollTo(0,0)}
 $("tb").innerHTML=C.map(function(c){return"<tr><td>"+c[1]+"</td><td>"+c[2]+"</td><td>"+c[3]+"</td></tr>"}).join("");
-if(API)$("demo").classList.add("hide");
 async function lookup(k){if(!API)return D[k]?{found:1,parent:D[k].p,student:D[k].s,score:D[k].sc,level:D[k].l}:{found:0};
 var r=await fetch(API+"?action=lookup&id="+k);return r.json()}
-async function loadCap(){if(!API)return;try{var r=await(await fetch(API+"?action=cap")).json();if(r.ok){CAP=r.cap;cnt=r.counts||{}}}catch(x){}}
+async function loadCap(){if(!API)return;try{var r=await(await fetch(API+"?action=cap")).json();if(r.ok){if(r.caps)CAPS=r.caps;cnt=r.counts||{}}}catch(x){}}
 async function login(){var k=en($("nid").value.trim()),e=$("err");
 if(!/^(\d{6}|\d{10})$/.test(k)){e.textContent="کد ملی ۱۰ رقمی یا کد دانش‌آموزی ۶ رقمی را وارد کنید.";return}
 $("go").disabled=true;$("go").textContent="در حال بررسی…";e.textContent="";
@@ -157,21 +155,20 @@ else{var s=st(cur.sc);r.innerHTML=s=="مردود"?"نمرهٔ فاینال "+cur
 chkNext();show(1)}
 $("b2").onclick=function(){show(0)};$("b3").onclick=function(){show(1)};
 function total(){return pick>=0?FEE[cur.lv]+($("club").checked?CLUB:0):0}
-function render(){var n=cur.type=="new",pl=$("placed").checked,x=C[pick];
-if(n&&pick>=0&&x[0]!="T2"&&!pl){pick=-1;cur.lv=""}
-$("ctb").innerHTML="<tr><th></th><th>ترم / سطح</th><th>روز</th><th>ساعت</th><th>شهریه</th><th>ظرفیت</th></tr>"+C.map(function(c,i){if(!n&&c[0]!=cur.allow)return"";var left=Math.max(0,CAP-(cnt[ckey(c)]||0)),lock=n&&c[0]!="T2"&&!pl,dis=!left||lock;
-return'<tr data-i="'+i+'" class="'+(dis?"dis":"")+(i==pick?" sel":"")+'"><td><input type="radio" name="c"'+(dis?" disabled":"")+(i==pick?" checked":"")+"></td><td>"+c[1]+"</td><td>"+c[2]+"</td><td>"+c[3]+"</td><td>"+money(FEE[c[0]])+"</td><td>"+(!left?"تکمیل":lock?"نیازمند تعیین سطح":fa(left)+" از "+fa(CAP)+" باقی")+"</td></tr>"}).join("");
+function render(){var n=cur.type=="new";
+$("ctb").innerHTML="<tr><th></th><th>ترم / سطح</th><th>روز</th><th>ساعت</th><th>شهریه</th><th>ظرفیت</th></tr>"+C.map(function(c,i){if(!n&&c[0]!=cur.allow)return"";var left=Math.max(0,(CAPS[c[0]]||7)-(cnt[ckey(c)]||0)),dis=!left;
+return'<tr data-i="'+i+'" class="'+(dis?"dis":"")+(i==pick?" sel":"")+'"><td><input type="radio" name="c"'+(dis?" disabled":"")+(i==pick?" checked":"")+"></td><td>"+c[1]+"</td><td>"+c[2]+"</td><td>"+c[3]+"</td><td>"+money(FEE[c[0]])+"</td><td>"+(!left?"تکمیل":fa(left)+" از "+fa(CAPS[c[0]]||7)+" باقی"+(n&&c[0]!="T2"?" · نیازمند تعیین سطح":""))+"</td></tr>"}).join("");
 [].forEach.call(document.querySelectorAll("#ctb tr[data-i]"),function(r){r.onclick=function(){if(r.classList.contains("dis"))return;pick=+r.getAttribute("data-i");cur.lv=C[pick][0];render()}});
-$("bk").classList.toggle("hide",!(pick>=0&&(cur.lv=="E1"||cur.lv=="E3")));chk()}
+$("bk").classList.toggle("hide",!(pick>=0&&(cur.lv=="E1"||cur.lv=="E3")));$("warn").classList.toggle("hide",!(n&&pick>=0&&cur.lv!="T2"));chk()}
 function chk(){var n=cur.type=="new",cd=!n&&cur.sc>=60&&cur.sc<70;$("tot").textContent=pick>=0?money(total()):"—";
 $("inv").disabled=!(pick>=0&&(!cd||$("pledge").checked))}
-["pledge","club"].forEach(function(i){$(i).oninput=$(i).onchange=chk});$("placed").onchange=render;
+["pledge","club"].forEach(function(i){$(i).oninput=$(i).onchange=chk});
 $("next").onclick=async function(){var n=cur.type=="new",cd=!n&&cur.sc>=60&&cur.sc<70;
 $("next").disabled=true;await loadCap();$("next").disabled=false;
 if(n){cur.first=$("fn").value.trim();cur.last=$("ln").value.trim();cur.lv=""}
 $("st").textContent=n?"ثبت‌نام "+cur.first+" "+cur.last:"ثبت‌نام "+cur.s;$("lv").innerHTML=n?"":'سطح قابل ثبت‌نام'+(cur.sc<60?" (تکرار ترم قبل)":"")+': <span class="tag">'+L[cur.lv]+"</span>";
 $("blocked").classList.add("hide");$("form").classList.remove("hide");$("newf").classList.toggle("hide",!n);$("cond").classList.toggle("hide",!cd);
-pick=-1;$("pledge").checked=false;$("placed").checked=false;$("club").checked=false;$("email").value="";$("e3").textContent="";render();show(2)};
+pick=-1;$("pledge").checked=false;$("club").checked=false;$("email").value="";$("e3").textContent="";render();show(2)};
 function startTimer(){t0=Date.now();clearInterval(tmr);tmr=setInterval(function(){var s=Math.floor((Date.now()-t0)/1000);$("tm").textContent=fa(("0"+Math.floor(s/60)).slice(-2)+":"+("0"+s%60).slice(-2))},1000)}
 function end(ic,t,p,note){fin=true;clearInterval(tmr);$("tm").classList.add("hide");$("hl").classList.remove("hide");$("ic").textContent=ic;$("t4").textContent=t;$("p4").textContent=p;if(note){$("fin").innerHTML=note;$("fin").classList.remove("hide")}}
 function release(){if(fin)return;clearInterval(tmr);$("tm").classList.add("hide");$("ic").textContent="✅";$("t4").textContent="ثبت‌نام شما ثبت شد";$("p4").textContent="فاکتور شما به‌زودی صادر می‌شود. لطفاً همین الان وارد همکلاسی شوید و از بخش «حساب مالی» فاکتور را پرداخت کنید؛ اگر هنوز فاکتور را ندیدید، چند دقیقه بعد دوباره سر بزنید.";$("hl").classList.remove("hide")}
@@ -180,7 +177,7 @@ function poll(reg){var n=0;(function tick(){if(fin)return;fetch(API+"?action=sta
 $("inv").onclick=async function(){var e=$("e3"),em=$("email").value.trim(),n=cur.type=="new";e.textContent="";
 if(em&&!/^\S+@\S+\.\S+$/.test(em)){e.textContent="ایمیل واردشده معتبر نیست.";return}
 var k=C[pick],club=$("club").checked,name=n?cur.first+" "+cur.last:cur.s;
-var d={action:"register",id:cur.key,type:cur.type,name:name,level:cur.lv,cls:ckey(k),club:club,email:em,pledge:$("pledge").checked,placed:$("placed").checked};
+var d={action:"register",id:cur.key,type:cur.type,name:name,level:cur.lv,cls:ckey(k),club:club,email:em,pledge:$("pledge").checked};
 $("inv").disabled=true;$("inv").textContent="در حال ثبت…";
 try{var reg="",dup=false;
 if(API){var r=await(await fetch(API,{method:"POST",body:JSON.stringify(d)})).json();
