@@ -11,7 +11,7 @@
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Sahel,Tahoma,sans-serif;line-height:1.9;min-height:100vh}
-.wrap{max-width:640px;margin:0 auto;padding:20px 16px 48px}
+.wrap{max-width:640px;margin:0 auto;padding:20px 16px 48px;position:relative}
 .top{text-align:center;padding:8px 0 16px}
 .top img{width:92px;height:92px;border-radius:50%;box-shadow:0 6px 18px #3d245733}
 .top h1{font-size:1.1rem;margin:8px 0 0;font-weight:700}
@@ -67,7 +67,7 @@ tr.dis{opacity:.45}tr.sel{background:var(--sel)}tr[data-i]{cursor:pointer}tr.dis
 #tb th,#ctb th{background:var(--thbg);color:var(--ink);font-weight:700}
 body{transition:background .6s,color .6s}
 :root[data-theme="night"]{--bg:#3d2457;--card:#4b2f6b;--ink:#ffeb96;--mute:#d9c7ee;--acc:#ffeb96;--acc-ink:#3d2457;--line:#6e4f92;--ok:#6fd39a;--warn:#ffb27a;--note:#ffeb9626;--sel:#ffeb9633;--thbg:#ffeb9633;--green:#5fe3a0}
-.sky{width:78px;height:78px;margin:0 auto 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sky{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));left:10px;width:40px;height:40px;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
 .sky svg{width:100%;height:100%;overflow:visible}
 .sky .moon,:root[data-theme="night"] .sky .sun{display:none}
 :root[data-theme="night"] .sky .moon{display:inline}
@@ -76,6 +76,13 @@ body{transition:background .6s,color .6s}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes tw{from{opacity:.25}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.rays,.tw{animation:none}}
+.facts{margin:12px 0;padding:12px 14px;border-radius:14px;background:var(--note);line-height:2}
+details{border:1.5px solid var(--line);border-radius:14px;margin-top:10px;padding:0 14px}
+summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:left;font-weight:700}
+details[open] summary::after{content:"−"}
+details p{margin:6px 0}details ul{margin:4px 0 8px}
 </style>
 </head>
 <body>
@@ -87,43 +94,41 @@ body{transition:background .6s,color .6s}
 <div class="stl" id="stl">مرحله ۱ از ۴ — ورود</div><div class="steps" id="steps"><i class="on"></i><i></i><i></i><i></i></div>
 
 <section class="card" id="s1">
-<div class="note">ثبت‌نام فقط مختص دانش‌آموزانی است که <b>عضو کانون نخبگان</b> هستند.</div>
-<label for="nid">کد ملی یا کد دانش‌آموزی را وارد کنید</label>
+<div class="note">ثبت‌نام فقط ویژهٔ دانش‌آموزان <b>عضو کانون نخبگان</b> است.</div>
+<label for="nid">کد ملی یا کد دانش‌آموزی</label>
 <input type="text" id="nid" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="----------">
-<p class="help">• زبان‌آموزان <b>ورودی ۱۴۰۴ به بعد</b>: کد ملی ۱۰ رقمی دانش‌آموز<br>• سایر زبان‌آموزان: <b>کد دانش‌آموزی ۶ رقمی</b> (همان کد ورود به همکلاسی)<br>• متقاضیان جدید نیز با کد ملی وارد می‌شوند.</p>
+<p class="help">کد ملی (ورودی ۱۴۰۴ به بعد و متقاضیان جدید) · یا کد دانش‌آموزی ۶ رقمی همکلاسی (سایرین)</p>
 <div class="err" id="err"></div>
 <button id="go">ورود</button>
-
 </section>
 
 <section class="card hide" id="s2">
-<h2 id="hi"></h2><div id="res" class="note hide"></div><div id="nm" class="sec hide"><b>مشخصات زبان‌آموز</b><div class="grid2"><input class="fld" type="text" id="fn" placeholder="نام" autocomplete="given-name"><input class="fld" type="text" id="ln" placeholder="نام خانوادگی" autocomplete="family-name"></div></div>
-<p style="margin:0;text-align:center"><b>ثبت‌نام ترم جدید پاییز دپارتمان زبان کانون نخبگان</b></p>
-<div class="sec">⏳ <b style="display:inline">مهلت ثبت‌نام:</b> تا ساعت ۲۴ روز ۱۱ آبان<br>🚀 <b style="display:inline">بازهٔ زمانی ترم:</b> از ۱۳ آبان تا ۲۸ آذر ۱۴۰۵ (۱۴ جلسهٔ ۲ ساعته)</div>
-<div class="sec"><b>⏰ زمان کلاس‌ها</b><div class="tbl"><table id="tb"></table></div></div>
-<div class="sec"><b>📋 شرایط ثبت‌نام</b>
-<b style="font-weight:400">🔹 زبان‌آموزان فعلی:</b>
-<ul><li>عزیزانی که در فاینال ترم قبل نمرهٔ ۷۰ به بالا کسب کرده‌اند.</li><li>قبولی مشروط: اگر نمره‌تان در بازهٔ ۶۰ تا ۶۹ بوده، با تعهد برای گرفتن نمرهٔ بالاتر در ترم جدید می‌توانید ثبت‌نام کنید! 😉</li></ul>
-<b style="font-weight:400">🎯 متقاضیان جدید و افرادی که وقفهٔ تحصیلی داشته‌اند:</b>
-<ul><li>ابتدا از طریق آیدی ادمین در ایتا هماهنگ کنید و پس از انجام تعیین سطح، برای ثبت‌نام در فرم اقدام کنید.</li></ul>
-🆔 <a href="https://eitaa.com/sodagar110" target="_blank" rel="noopener">eitaa.com/sodagar110</a></div>
-<div class="sec"><b>📚 قابل توجه متقاضیان (تهیهٔ کتاب)</b>زبان‌آموزان سطح E3 و E1 وارد کتاب Interchange می‌شوند و سایر سطوح فعلاً با کتاب قبلی خود ادامه می‌دهند. برای تهیهٔ کتاب، حداکثر تا روز دوشنبه ساعت ۱۴ سفارش خود را از طریق آیدی ادمین ثبت کنید.</div>
-<div class="sec"><b>🗣️ جلسات مکالمهٔ آزاد (Discussion Club) – کاملاً اختیاری</b>برای تقویت مکالمه، جلسات جذاب بحث آزاد داریم! 🗣️✨ اگر دوست دارید شرکت کنید، تیک این گزینه را در مرحلهٔ بعد بزنید.<br>⏰ جمعه‌ها ۱۸ تا ۲۰ (حضوری: مکالمه + ورزش)<br>💳 هزینه: ۵۰۰ هزار تومان</div>
-<div class="sec"><b>⚠️ توجه مهم</b><ul><li>ثبت‌نام شما به‌محض پرداخت فاکتور در همکلاسی، قطعی می‌شود.</li><li>مبلغ شهریه را در صفحهٔ بعد (انتخاب کلاس) می‌توانید ببینید.</li><li>فاینال ترم در تاریخ ۲۹ آذر ۱۴۰۵ برگزار می‌شود؛ البته نهایی‌شدن این تاریخ به شرایط آن زمان بستگی دارد.</li></ul></div>
-<p style="text-align:center;margin:14px 0 0">به امید موفقیت و درخشش تک‌تک شما عزیزان! ✌️🌸</p>
+<h2 id="hi"></h2><div id="res" class="note hide"></div>
+<div id="nm" class="sec hide"><b>نام و نام خانوادگی زبان‌آموز</b><div class="grid2"><input class="fld" type="text" id="fn" placeholder="نام" autocomplete="given-name"><input class="fld" type="text" id="ln" placeholder="نام خانوادگی" autocomplete="family-name"></div></div>
+<div class="facts">⏳ مهلت ثبت‌نام: تا ساعت ۲۴ روز ۱۱ آبان<br>🚀 ترم: ۱۳ آبان تا ۲۸ آذر ۱۴۰۵ (۱۴ جلسهٔ ۲ ساعته)</div>
 <button id="next">ادامه و انتخاب کلاس</button><button class="ghost" id="b2">بازگشت</button>
+<p class="help" style="text-align:center;margin:16px 0 0">اطلاعات بیشتر (اختیاری)</p>
+<details><summary>⏰ زمان کلاس‌ها</summary><div class="tbl"><table id="tb"></table></div></details>
+<details><summary>📋 شرایط ثبت‌نام</summary>
+<p><b>🔹 زبان‌آموزان فعلی</b></p><ul><li>نمرهٔ فاینال ترم قبل ۷۰ به بالا.</li><li>قبولی مشروط (نمرهٔ ۶۰ تا ۶۹): با تعهد برای گرفتن نمرهٔ بالاتر در ترم جدید می‌توانید ثبت‌نام کنید! 😉</li></ul>
+<p><b>🎯 متقاضیان جدید و افرادی که وقفهٔ تحصیلی داشته‌اند</b></p><ul><li>ابتدا از طریق آیدی ادمین در ایتا هماهنگ کنید و پس از تعیین سطح، در فرم ثبت‌نام کنید.</li></ul>
+<p>🆔 <a href="https://eitaa.com/sodagar110" target="_blank" rel="noopener">eitaa.com/sodagar110</a></p></details>
+<details><summary>📚 تهیهٔ کتاب</summary><p>زبان‌آموزان سطح E3 و E1 وارد کتاب Interchange می‌شوند و سایر سطوح فعلاً با کتاب قبلی ادامه می‌دهند. برای تهیهٔ کتاب، حداکثر تا روز دوشنبه ساعت ۱۴ سفارش خود را از طریق آیدی ادمین ثبت کنید.</p></details>
+<details><summary>🗣️ مکالمهٔ آزاد (اختیاری)</summary><p>جلسات بحث آزاد برای تقویت مکالمه. اگر دوست دارید شرکت کنید، در مرحلهٔ بعد تیک آن را بزنید.</p><p>⏰ جمعه‌ها ۱۸ تا ۲۰ (حضوری: مکالمه + ورزش)<br>💳 هزینه: ۵۰۰ هزار تومان</p></details>
+<details><summary>⚠️ نکات مهم</summary><ul><li>ثبت‌نام شما به‌محض پرداخت فاکتور در همکلاسی، قطعی می‌شود.</li><li>مبلغ شهریه را در صفحهٔ بعد (انتخاب کلاس) می‌توانید ببینید.</li><li>فاینال ترم ۲۹ آذر ۱۴۰۵ برگزار می‌شود؛ البته نهایی‌شدن این تاریخ به شرایط آن زمان بستگی دارد.</li></ul></details>
+<p style="text-align:center;margin:16px 0 0;font-size:.9rem">به امید موفقیت و درخشش تک‌تک شما عزیزان! ✌️🌸</p>
 </section>
 
 <section class="card hide" id="s3">
 <h2 id="st"></h2><div id="lv"></div>
 <div id="blocked" class="note hide">متأسفانه با توجه به نمرهٔ فاینال، امکان ثبت‌نام آنلاین برای شما فعال نیست. لطفاً با ادمین در ایتا هماهنگ کنید.</div>
 <div id="form">
-<div id="newf" class="hide"><p class="help" style="margin:0 0 8px">عضو جدید می‌تواند مستقیماً در <b>ترم 2TEEN</b> ثبت‌نام کند. سایر ترم‌ها هم نمایش داده می‌شوند، اما انتخاب آن‌ها فقط برای کسانی معتبر است که قبلاً از طریق ادمین <b>تعیین سطح</b> شده‌اند.</p><div class="note hide" id="warn">⚠️ توجه: ثبت‌نام در این ترم نیازمند <b>تعیین سطح قبلی</b> از طریق ادمین است. اگر هنوز تعیین سطح نشده‌اید، ابتدا با ادمین در ایتا هماهنگ کنید؛ در غیر این صورت ثبت‌نام شما لغو می‌شود.</div></div>
+<div id="newf" class="hide"><p class="help" style="margin:0 0 8px">عضو جدید در <b>ترم 2TEEN</b> آزاد است؛ ترم‌های دیگر فقط پس از <b>تعیین سطح</b> توسط ادمین.</p><div class="note hide" id="warn">⚠️ این ترم نیازمند <b>تعیین سطح قبلی</b> از طریق ادمین است؛ در غیر این صورت ثبت‌نام لغو می‌شود.</div></div>
 <div class="note hide" id="cond"><label style="display:flex;gap:8px;margin:0"><input type="checkbox" id="pledge" style="accent-color:var(--acc)"> متعهد می‌شوم در ترم جدید نمرهٔ بالاتری کسب کنم.</label></div>
-<div class="note hide" id="bk">📚 این سطح وارد کتاب جدید Interchange می‌شود. سفارش کتاب را تا دوشنبه ساعت ۱۴ از طریق ادمین انجام دهید.</div>
+<div class="note hide" id="bk">📚 این سطح با کتاب جدید Interchange ادامه می‌دهد؛ سفارش کتاب تا دوشنبه ساعت ۱۴ از طریق ادمین.</div>
 <div class="sec" id="clsw"><b>کلاس مورد نظر را انتخاب کنید</b><div class="tbl"><table id="ctb"></table></div></div>
-<label class="opt"><input type="checkbox" id="club"><span>شرکت در جلسات مکالمهٔ آزاد (اختیاری) — جمعه‌ها ۱۸ تا ۲۰ — ۵۰۰ هزار تومان</span></label>
-<div class="sec"><label for="email">ایمیل (برای دریافت اطلاع‌رسانی ثبت‌نام و پرداخت)</label><input class="fld" type="email" id="email" inputmode="email" autocomplete="email" placeholder="example@gmail.com"></div>
+<label class="opt"><input type="checkbox" id="club"><span>مکالمهٔ آزاد (اختیاری) — جمعه‌ها ۱۸ تا ۲۰ — ۵۰۰ هزار تومان</span></label>
+<div class="sec"><label for="email">ایمیل (اختیاری)</label><input class="fld" type="email" id="email" inputmode="email" autocomplete="email" placeholder="example@gmail.com"></div>
 <div class="row tot"><span>مبلغ فاکتور</span><span id="tot">—</span></div>
 <div class="err" id="e3"></div>
 <button id="inv" disabled>ثبت‌نام و صدور فاکتور</button><button class="ghost" id="b3">بازگشت</button>
@@ -133,13 +138,16 @@ body{transition:background .6s,color .6s}
 <section class="card hide" id="s4">
 <div class="big" id="ic">⏳</div><h2 style="text-align:center" id="t4">فاکتور شما در حال صدور است</h2>
 <p style="text-align:center;margin:0" id="p4">لطفاً صفحه را نبندید؛ معمولاً یکی دو دقیقه طول می‌کشد.</p>
-<div class="timer" id="tm">۰۰:۰۰</div><a class="btn hide" id="hl" href="https://nokhbeganinst.ir/newpanels/" target="_blank" rel="noopener">ورود به همکلاسی و پرداخت فاکتور</a>
+<div class="timer" id="tm">۰۰:۰۰</div><a class="btn hide" id="hl" href="#" rel="noopener">ورود به اپلیکیشن همکلاسی<span style="display:block;font-weight:400;font-size:.78rem;opacity:.85">اگر اپلیکیشن نصب نیست، از کافه‌بازار نصب کنید</span></a>
 <div id="sum"></div>
 <div class="note">پس از صدور فاکتور، وارد اپ همکلاسی شوید و از بخش <b>«حساب مالی»</b> فاکتور را پرداخت کنید. <b>ثبت‌نام نهایی با پرداخت فاکتور انجام می‌شود.</b></div><div class="note hide" id="fin"></div>
 </section>
 </div>
 <script>
-var API="https://script.google.com/macros/s/AKfycby-V3rG2fJEunqLyjNL0XCMSoGGuJ9J_mjfNYx9JDLw2sSa1opscvjm59JIkaE0E3VWwQ/exec";/* آدرس Web App اپس‌اسکریپت را اینجا بگذارید؛ خالی = حالت پیش‌نمایش */
+var API="https://script.google.com/macros/s/AKfycby-V3rG2fJEunqLyjNL0XCMSoGGuJ9J_mjfNYx9JDLw2sSa1opscvjm59JIkaE0E3VWwQ/exec";
+var DUPMSG="⚠️ این دانش‌آموز قبلاً ثبت‌نام شده است. اگر فاکتور شما صادر شده، <b>همان را در اپلیکیشن همکلاسی (حساب مالی) پرداخت کنید</b>. ثبت‌نام دوباره باعث صدور فاکتور تکراری می‌شود و باید دوباره پرداخت کنید! اگر فکر می‌کنید اشتباه است، با ادمین هماهنگ کنید: <a href=\"https://eitaa.com/sodagar110\" target=\"_blank\" rel=\"noopener\">eitaa.com/sodagar110</a>";
+var APP_LINK="";/* اگر لینک مستقیم باز کردن اپلیکیشن همکلاسی را دارید، اینجا بگذارید */
+function appHref(){if(APP_LINK)return APP_LINK;if(/Android/i.test(navigator.userAgent))return"intent://#Intent;package=com.hamkelasisoftware.app;S.browser_fallback_url="+encodeURIComponent("https://cafebazaar.ir/app/com.hamkelasisoftware.app")+";end";return"https://nokhbeganinst.ir/newpanels/"}/* آدرس Web App اپس‌اسکریپت را اینجا بگذارید؛ خالی = حالت پیش‌نمایش */
 var fa=function(s){return String(s).replace(/\d/g,function(d){return"۰۱۲۳۴۵۶۷۸۹"[d]})},en=function(s){return s.replace(/[۰-۹]/g,function(d){return"۰۱۲۳۴۵۶۷۸۹".indexOf(d)}).replace(/[٠-٩]/g,function(d){return"٠١٢٣٤٥٦٧٨٩".indexOf(d)})};
 var money=function(n){return fa(n.toLocaleString("en-US").replace(/,/g,"٬"))+" تومان"};
 var L={T2:"ترم 2TEEN",E1:"E1",E3:"E3",T8:"ترم ۸",P2:"P2"},SN=["ورود","اطلاعیه و شرایط","انتخاب کلاس","صدور فاکتور"];
@@ -150,7 +158,7 @@ var $=function(i){return document.getElementById(i)},cur,pick=-1,tmr,t0,fin=fals
 var manual=false,mode="";
 function autoMode(){var d=new Date(),h=d.getHours()+d.getMinutes()/60;return h>=6&&h<17.5?"day":"night"}
 function setMode(m){mode=m;document.documentElement.setAttribute("data-theme",m);$("sky").setAttribute("aria-label",m=="day"?"حالت روز؛ برای تغییر به شب بزنید":"حالت شب؛ برای تغییر به روز بزنید")}
-setMode(autoMode());setInterval(function(){if(!manual)setMode(autoMode())},60000);
+$("hl").setAttribute("href",appHref());setMode(autoMode());setInterval(function(){if(!manual)setMode(autoMode())},60000);
 $("sky").onclick=function(){manual=true;setMode(mode=="day"?"night":"day")};
 $("sky").onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();$("sky").onclick()}};
 var st=function(sc){return sc>=70?"قبول":sc>=60?"قبولی مشروط":"مردود"},ckey=function(c){return c[1]+" - "+c[2]+" "+c[3]};
@@ -161,6 +169,7 @@ var r=await fetch(API+"?action=lookup&id="+k);return r.json()}
 async function loadCap(){if(!API)return;try{var r=await(await fetch(API+"?action=cap")).json();if(r.ok){if(r.caps)CAPS=r.caps;cnt=r.counts||{}}}catch(x){}}
 async function login(){var k=en($("nid").value.trim()),e=$("err");
 if(!/^(\d{6}|\d{10})$/.test(k)){e.textContent="کد ملی ۱۰ رقمی یا کد دانش‌آموزی ۶ رقمی را وارد کنید.";return}
+if(!API&&location.search.indexOf("demo")<0){e.textContent="اتصال سامانه تنظیم نشده است؛ لطفاً به ادمین اطلاع دهید.";return}
 $("go").disabled=true;$("go").textContent="در حال بررسی…";e.textContent="";
 try{var r=await lookup(k);
 if(r.found){cur={key:k,type:"old",p:r.parent,s:r.student,sc:+r.score,lv:r.level,allow:r.level}}
@@ -193,9 +202,9 @@ $("blocked").classList.add("hide");$("form").classList.remove("hide");$("newf").
 pick=-1;$("pledge").checked=false;$("club").checked=false;$("email").value="";$("e3").textContent="";render();show(2)};
 function startTimer(){t0=Date.now();clearInterval(tmr);tmr=setInterval(function(){var s=Math.floor((Date.now()-t0)/1000);$("tm").textContent=fa(("0"+Math.floor(s/60)).slice(-2)+":"+("0"+s%60).slice(-2))},1000)}
 function end(ic,t,p,note){fin=true;clearInterval(tmr);$("tm").classList.add("hide");$("hl").classList.remove("hide");$("ic").textContent=ic;$("t4").textContent=t;$("p4").textContent=p;if(note){$("fin").innerHTML=note;$("fin").classList.remove("hide")}}
-function release(){if(fin)return;clearInterval(tmr);$("tm").classList.add("hide");$("ic").textContent="✅";$("t4").textContent="ثبت‌نام شما ثبت شد";$("p4").textContent="فاکتور شما به‌زودی صادر می‌شود. لطفاً همین الان وارد همکلاسی شوید و از بخش «حساب مالی» فاکتور را پرداخت کنید؛ اگر هنوز فاکتور را ندیدید، چند دقیقه بعد دوباره سر بزنید.";$("hl").classList.remove("hide")}
+function release(){if(fin)return;clearInterval(tmr);$("tm").classList.add("hide");$("ic").textContent="📝";$("t4").textContent="ثبت‌نام شما ثبت شد";$("p4").textContent="اما فاکتور هنوز صادر نشده است. نگران نباشید؛ ادمین با شما هماهنگ می‌کند. هر وقت فاکتور در اپلیکیشن همکلاسی (بخش حساب مالی) آمد، همان را پرداخت کنید.";$("hl").classList.remove("hide")}
 function ok(){end("🌼","فاکتور شما صادر شد","اکنون وارد اپ همکلاسی شوید، بخش «حساب مالی» را باز کنید و فاکتور را پرداخت کنید.",$("email").value.trim()?"ایمیل اطلاع‌رسانی نیز برای شما ارسال می‌شود.":"")}
-function poll(reg){var n=0;(function tick(){if(fin)return;fetch(API+"?action=status&reg="+reg).then(function(r){return r.json()}).then(function(r){if(r.status&&r.status!="ثبت شد"){if(r.status=="خطا")end("⚠️","ثبت‌نام شما ذخیره شد","صدور خودکار فاکتور با مشکل مواجه شد.","ادمین موضوع را پیگیری می‌کند و نتیجه به شما اطلاع داده می‌شود.");else ok()}}).catch(function(){}).then(function(){if(fin)return;if(++n<150)setTimeout(tick,4000);else end("⏳","ثبت‌نام شما ذخیره شد","صدور فاکتور بیش از حد معمول طول کشیده است.","فاکتور به‌زودی صادر می‌شود و اطلاع می‌دهیم.")})})()}
+function poll(reg){var n=0;(function tick(){if(fin)return;fetch(API+"?action=status&reg="+reg).then(function(r){return r.json()}).then(function(r){if(r.status=="خطا"||r.status=="فاکتور صادر شد"||r.status=="پرداخت شد"||r.status=="نهایی شد"){if(r.status=="خطا")end("⚠️","ثبت‌نام شما ذخیره شد","صدور خودکار فاکتور با مشکل مواجه شد.","ادمین موضوع را پیگیری می‌کند و نتیجه به شما اطلاع داده می‌شود.");else ok()}}).catch(function(){}).then(function(){if(fin)return;if(++n<150)setTimeout(tick,4000);else end("⏳","ثبت‌نام شما ذخیره شد","صدور فاکتور بیش از حد معمول طول کشیده است.","فاکتور به‌زودی صادر می‌شود و اطلاع می‌دهیم.")})})()}
 $("inv").onclick=async function(){var e=$("e3"),em=$("email").value.trim(),n=cur.type=="new";e.textContent="";
 if(em&&!/^\S+@\S+\.\S+$/.test(em)){e.textContent="ایمیل واردشده معتبر نیست.";return}
 var k=C[pick],club=$("club").checked,name=n?cur.first+" "+cur.last:cur.s;
@@ -203,10 +212,11 @@ var d={action:"register",id:cur.key,type:cur.type,name:name,level:cur.lv,cls:cke
 $("inv").disabled=true;$("inv").textContent="در حال ثبت…";
 try{var reg="",dup=false;
 if(API){var r=await(await fetch(API,{method:"POST",body:JSON.stringify(d)})).json();
+if(r.dup||r.error=="dup"){e.innerHTML=DUPMSG;return}
 if(!r.ok){await loadCap();render();e.textContent=r.error=="full"?"ظرفیت این کلاس همین الان تکمیل شد؛ لطفاً کلاس دیگری انتخاب کنید.":"ثبت‌نام انجام نشد: "+(r.error||"خطای نامشخص");return}
 reg=r.reg;dup=!!r.dup}
 $("sum").innerHTML='<div class="row"><span>زبان‌آموز</span><b>'+name+'</b></div><div class="row"><span>کلاس</span><b>'+k[1]+" — "+k[2]+" "+k[3]+'</b></div><div class="row"><span>شهریهٔ ترم</span><b>'+money(FEE[cur.lv])+"</b></div>"+(club?'<div class="row"><span>مکالمهٔ آزاد</span><b>'+money(CLUB)+"</b></div>":"")+'<div class="row tot"><span>مبلغ فاکتور</span><span>'+money(total())+"</span></div>";
-fin=false;$("tm").classList.remove("hide");$("hl").classList.add("hide");$("ic").textContent="⏳";$("t4").textContent="فاکتور شما در حال صدور است";$("p4").textContent="لطفاً صفحه را نبندید؛ معمولاً یکی دو دقیقه طول می‌کشد.";$("fin").classList.add("hide");show(3);startTimer();setTimeout(release,60000);
+fin=false;$("tm").classList.remove("hide");$("hl").classList.add("hide");$("ic").textContent="⏳";$("t4").textContent="فاکتور شما در حال صدور است";$("p4").textContent="لطفاً صفحه را نبندید؛ معمولاً یکی دو دقیقه طول می‌کشد.";$("fin").classList.add("hide");show(3);startTimer();setTimeout(release,120000);
 if(dup){$("fin").innerHTML="ثبت‌نام قبلی این کد در سامانه موجود بود؛ وضعیت همان نمایش داده می‌شود.";$("fin").classList.remove("hide")}
 if(!API)setTimeout(ok,7000);else poll(reg)}
 catch(x){e.textContent="ارتباط با سامانه برقرار نشد؛ دوباره تلاش کنید."}
